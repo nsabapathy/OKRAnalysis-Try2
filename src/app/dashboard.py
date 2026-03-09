@@ -138,7 +138,7 @@ def main():
             st.subheader("Quality Distribution")
             if filtered_quality:
                 fig = create_quality_distribution(filtered_quality)
-                st.plotly_chart(fig, use_container_width=True)
+                st.plotly_chart(fig, width="stretch")
             else:
                 st.info("No quality data available")
         
@@ -146,7 +146,7 @@ def main():
             st.subheader("Top Themes")
             if all_themes:
                 fig = create_theme_bar_chart(all_themes[:10])
-                st.plotly_chart(fig, use_container_width=True)
+                st.plotly_chart(fig, width="stretch")
             else:
                 st.info("No theme data available")
     
@@ -159,7 +159,7 @@ def main():
             with col1:
                 st.subheader("Theme Distribution")
                 fig = create_theme_sunburst(all_themes)
-                st.plotly_chart(fig, use_container_width=True)
+                st.plotly_chart(fig, width="stretch")
             
             with col2:
                 st.subheader("Theme Statistics")
@@ -185,7 +185,7 @@ def main():
                 for t in all_themes[:20]
             ])
             
-            st.dataframe(theme_df, use_container_width=True, height=400)
+            st.dataframe(theme_df, width="stretch", height=400)
             
             with st.expander("View Example Objectives"):
                 selected_theme = st.selectbox(
@@ -230,7 +230,7 @@ def main():
             with col1:
                 st.subheader("Quality by Team")
                 fig = create_quality_by_team(filtered_quality)
-                st.plotly_chart(fig, use_container_width=True)
+                st.plotly_chart(fig, width="stretch")
             
             with col2:
                 st.subheader("Quality Dimensions")
@@ -242,12 +242,12 @@ def main():
                     'actionability': sum(q['actionability_score'] for q in filtered_quality) / len(filtered_quality)
                 }
                 fig = create_quality_radar(avg_scores)
-                st.plotly_chart(fig, use_container_width=True)
+                st.plotly_chart(fig, width="stretch")
             
             st.markdown("---")
             st.subheader("Team Comparison")
             fig = create_team_comparison(filtered_quality, top_n=10)
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width="stretch")
             
             st.markdown("---")
             
@@ -305,7 +305,7 @@ def main():
         if alignment_matrix and alignment_matrix.get('teams'):
             st.subheader("Cross-Team Alignment Heatmap")
             fig = create_alignment_heatmap(alignment_matrix)
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width="stretch")
             
             st.markdown("---")
             

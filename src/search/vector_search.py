@@ -187,7 +187,7 @@ class OKRVectorSearch:
             include=['embeddings', 'documents']
         )
         
-        if not team_a_results['embeddings'] or not team_b_results['embeddings']:
+        if len(team_a_results['embeddings']) == 0 or len(team_b_results['embeddings']) == 0:
             return {
                 'team_a': team_a,
                 'team_b': team_b,

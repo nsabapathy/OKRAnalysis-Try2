@@ -4,9 +4,11 @@ Provides unified interface for Gemini (can be swapped for Azure OpenAI later)
 """
 
 import os
+import json
 from typing import Dict, List, Optional
 from tenacity import retry, stop_after_attempt, wait_exponential
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -14,70 +16,66 @@ load_dotenv()
 
 class LLMClient:
     """Abstraction layer for LLM interactions"""
-    
-    def __init__(self, api_key: Optional[str] = None, model_name: str = "gemini-2.0-flash-exp"):
+
+    def __init__(self, api_key: Optional[str] = None, model_name: Optional[str] = None):
         self.api_key = api_key or os.getenv("GEMINI_API_KEY")
-        self.model_name = model_name
-        
+        self.model_name = model_name or os.getenv("GEMINI_MODEL", "gemini-2.5-flash-lite")
+
         if not self.api_key:
             raise ValueError("GEMINI_API_KEY not found. Please set it in .env file")
-        
-        genai.configure(api_key=self.api_key)
-        self.model = genai.GenerativeModel(self.model_name)
-    
+
+        self.client = genai.Client(api_key=self.api_key)
+
     @retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=4, max=10))
     def generate(self, prompt: str, temperature: float = 0.3, max_tokens: int = 8000) -> str:
         """
         Generate text using Gemini with retry logic
-        
+
         Args:
             prompt: Input prompt
             temperature: Sampling temperature (0.0-1.0)
             max_tokens: Maximum tokens to generate
-        
+
         Returns:
             Generated text response
         """
-        generation_config = genai.types.GenerationConfig(
-            temperature=temperature,
-            max_output_tokens=max_tokens,
+        response = self.client.models.generate_content(
+            model=self.model_name,
+            contents=prompt,
+            config=types.GenerateContentConfig(
+                temperature=temperature,
+                max_output_tokens=max_tokens,
+            ),
         )
-        
-        response = self.model.generate_content(
-            prompt,
-            generation_config=generation_config
-        )
-        
+
         return response.text
-    
+
     @retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=4, max=10))
     def generate_json(self, prompt: str, temperature: float = 0.3) -> Dict:
         """
         Generate structured JSON response
-        
+
         Args:
             prompt: Input prompt (should request JSON output)
             temperature: Sampling temperature
-        
+
         Returns:
             Parsed JSON response
         """
-        generation_config = genai.types.GenerationConfig(
-            temperature=temperature,
-            response_mime_type="application/json"
+        response = self.client.models.generate_content(
+            model=self.model_name,
+            contents=prompt,
+            config=types.GenerateContentConfig(
+                temperature=temperature,
+                response_mime_type="application/json",
+            ),
         )
-        
-        response = self.model.generate_content(
-            prompt,
-            generation_config=generation_config
-        )
-        
-        import json
+
         return json.loads(response.text)
-    
+
     def count_tokens(self, text: str) -> int:
         """Estimate token count for text"""
-        return self.model.count_tokens(text).total_tokens
+        return self.client.models.count_tokens(model=self.model_name, contents=text).total_tokens
 
 
 class PromptTemplates:

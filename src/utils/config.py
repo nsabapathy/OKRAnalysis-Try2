@@ -15,7 +15,7 @@ class Config:
     """Application configuration"""
     
     GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "")
-    GEMINI_MODEL: str = os.getenv("GEMINI_MODEL", "gemini-2.0-flash-exp")
+    GEMINI_MODEL: str = os.getenv("GEMINI_MODEL", "gemini-2.5-flash-lite")
     
     CHUNK_SIZE: int = int(os.getenv("CHUNK_SIZE", "125"))
     MAX_WORKERS: int = int(os.getenv("MAX_WORKERS", "4"))

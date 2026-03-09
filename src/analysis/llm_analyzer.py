@@ -16,7 +16,7 @@ from src.data.okr_loader import OKREntry
 class OKRAnalyzer:
     """Main analyzer class using Gemini Flash with map-reduce pattern"""
     
-    def __init__(self, api_key: Optional[str] = None, model_name: str = "gemini-2.0-flash-exp"):
+    def __init__(self, api_key: Optional[str] = None, model_name: Optional[str] = None):
         self.llm = LLMClient(api_key=api_key, model_name=model_name)
         self.prompt_templates = PromptTemplates()
     
