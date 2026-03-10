@@ -1,6 +1,6 @@
 """
 Alignment Detection Module
-Analyzes cross-team alignment, gaps, and collaboration opportunities
+Analyzes cross-team alignment and collaboration opportunities
 """
 
 from typing import List, Dict
@@ -14,7 +14,7 @@ from src.search.vector_search import OKRVectorSearch
 
 
 class AlignmentDetector:
-    """Detects alignment patterns and gaps across teams"""
+    """Detects alignment patterns across teams"""
     
     def __init__(self, analyzer: OKRAnalyzer, vector_search: OKRVectorSearch):
         self.analyzer = analyzer
@@ -28,7 +28,7 @@ class AlignmentDetector:
             team_okrs: Dictionary mapping team names to their OKRs
         
         Returns:
-            Alignment analysis with gaps and opportunities
+            Alignment analysis with opportunities
         """
         return self.analyzer.analyze_team_alignment(team_okrs)
     

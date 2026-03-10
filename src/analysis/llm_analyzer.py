@@ -212,7 +212,7 @@ class OKRAnalyzer:
             team_okrs: Dictionary mapping team names to their OKRs
         
         Returns:
-            Alignment analysis with gaps and opportunities
+            Alignment analysis with opportunities
         """
         print("Analyzing cross-team alignment...")
         
@@ -229,7 +229,6 @@ class OKRAnalyzer:
             print(f"Error in alignment analysis: {str(e)}")
             return {
                 'alignments': [],
-                'gaps': [],
                 'conflicts': [],
                 'collaboration_opportunities': [],
                 'status': 'error',
@@ -265,7 +264,6 @@ class OKRAnalyzer:
 
 **Alignment Analysis:**
 - Strong alignments found: {len(alignment_results.get('alignments', []))}
-- Strategic gaps identified: {len(alignment_results.get('gaps', []))}
 - Potential conflicts: {len(alignment_results.get('conflicts', []))}
 
 Create a concise executive summary (300-400 words) highlighting:

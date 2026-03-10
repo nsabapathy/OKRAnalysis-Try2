@@ -6,7 +6,7 @@ AI-powered OKR (Objectives and Key Results) analysis system supporting multiple 
 
 - **Theme Extraction**: Identify recurring strategic themes across all OKRs using LLM-based analysis
 - **Quality Assessment**: Score OKRs on clarity, measurability, ambition, alignment, and actionability
-- **Alignment Analysis**: Detect cross-team alignment, gaps, and collaboration opportunities
+- **Alignment Analysis**: Detect cross-team alignment and collaboration opportunities
 - **Semantic Search**: Find similar OKRs using vector embeddings
 - **Interactive Dashboard**: Explore insights through a modern Streamlit web interface
 - **Parallel Processing**: Process large datasets efficiently with map-reduce pattern
@@ -147,11 +147,6 @@ streamlit run src/app/dashboard.py
 - Team comparison across all dimensions
 - Top quality OKRs showcase
 - OKRs needing improvement with suggestions
-
-### 🔗 Alignment & Gaps Tab
-- Cross-team alignment heatmap
-- Strongest and weakest team alignments
-- Potential collaboration opportunities
 
 ### 🔍 Search Tab
 - Semantic search across all OKRs

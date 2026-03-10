@@ -17,7 +17,6 @@ from src.app.components.charts import (
     create_quality_distribution,
     create_quality_by_team,
     create_quality_radar,
-    create_alignment_heatmap,
     create_quality_trends,
     create_team_comparison
 )
@@ -64,7 +63,6 @@ def main():
     
     all_quality_scores = storage.get_quality_scores()
     all_themes = storage.get_themes()
-    alignment_matrix = storage.get_alignment_matrix()
     
     teams = sorted(list(set(okr['team'] for okr in all_okrs)))
     quarters = sorted(list(set(okr['quarter'] for okr in all_okrs)))
@@ -101,11 +99,10 @@ def main():
            (selected_quarter == "All" or q['quarter'] == selected_quarter)
     ]
     
-    tab1, tab2, tab3, tab4, tab5 = st.tabs([
+    tab1, tab2, tab3, tab4 = st.tabs([
         "📈 Overview",
         "🎨 Theme Analysis",
         "⭐ Quality Metrics",
-        "🔗 Alignment & Gaps",
         "🔍 Search"
     ])
     
@@ -300,44 +297,6 @@ def main():
             st.info("No quality data available. Run analysis first.")
     
     with tab4:
-        st.header("Alignment & Collaboration")
-        
-        if alignment_matrix and alignment_matrix.get('teams'):
-            st.subheader("Cross-Team Alignment Heatmap")
-            fig = create_alignment_heatmap(alignment_matrix)
-            st.plotly_chart(fig, width="stretch")
-            
-            st.markdown("---")
-            
-            col1, col2 = st.columns(2)
-            
-            with col1:
-                st.subheader("🤝 Strongest Alignments")
-                
-                matrix = alignment_matrix['matrix']
-                teams_list = alignment_matrix['teams']
-                
-                alignments = []
-                for i, team_a in enumerate(teams_list):
-                    for j, team_b in enumerate(teams_list):
-                        if i < j:
-                            score = matrix[team_a][team_b]
-                            alignments.append((team_a, team_b, score))
-                
-                alignments.sort(key=lambda x: x[2], reverse=True)
-                
-                for team_a, team_b, score in alignments[:10]:
-                    st.markdown(f"**{team_a}** ↔️ **{team_b}**: {score:.2f}")
-            
-            with col2:
-                st.subheader("⚠️ Weakest Alignments")
-                
-                for team_a, team_b, score in alignments[-10:]:
-                    st.markdown(f"**{team_a}** ↔️ **{team_b}**: {score:.2f}")
-        else:
-            st.info("No alignment data available. Run analysis first.")
-    
-    with tab5:
         st.header("🔍 Semantic Search")
         
         if vector_search:

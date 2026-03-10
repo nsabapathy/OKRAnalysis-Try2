@@ -203,9 +203,8 @@ Return your assessment as JSON:
 
 Identify:
 1. **Strong Alignments**: Where teams are working toward complementary goals
-2. **Gaps**: Strategic areas that appear under-resourced or missing
-3. **Conflicts**: Where teams might have competing priorities
-4. **Opportunities**: Where teams could collaborate more effectively
+2. **Conflicts**: Where teams might have competing priorities
+3. **Opportunities**: Where teams could collaborate more effectively
 
 Return your analysis as JSON:
 {{
@@ -214,13 +213,6 @@ Return your analysis as JSON:
       "teams": ["Team A", "Team B"],
       "description": "How they align",
       "strength": "high/medium/low"
-    }}
-  ],
-  "gaps": [
-    {{
-      "area": "Strategic area",
-      "description": "What's missing",
-      "impact": "high/medium/low"
     }}
   ],
   "conflicts": [
