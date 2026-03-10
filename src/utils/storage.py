@@ -156,7 +156,7 @@ class ResultsStorage:
             """, (
                 theme['name'],
                 theme['description'],
-                theme.get('count', 0),
+                theme.get('total_count', theme.get('count', 0)),
                 json.dumps(theme.get('example_objectives', []))
             ))
         
