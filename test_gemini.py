@@ -1,6 +1,11 @@
 import os
+import ssl
+import certifi
 from google import genai
 from dotenv import load_dotenv
+
+# Fix SSL certificate issue by setting environment variable
+os.environ['SSL_CERT_FILE'] = certifi.where()
 
 
 def main():
@@ -23,6 +28,9 @@ def main():
     except Exception as e:
         print("Request failed. Error was:")
         print(repr(e))
+        import traceback
+        print("\nFull traceback:")
+        traceback.print_exc()
 
 
 if __name__ == "__main__":

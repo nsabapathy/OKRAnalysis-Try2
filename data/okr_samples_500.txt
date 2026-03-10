@@ -977,6 +977,7 @@ Key Result 2: Reduce overall IT operational costs by 20% through optimization
 Key Result 3: Establish ROI measurement framework for all IT investments
 Quality Level: High
 Raw Text: Team: IT | Quarter: Q1 2024 | Objective: Build robust IT financial management and cost optimization | Key Results: Implement IT cost allocation model with 95% accuracy, Reduce overall IT operational costs by 20% through optimization, Establish ROI measurement framework for all IT investments
+
 === OKR ENTRY ===
 Team: Engineering
 Quarter: Q1 2024
@@ -2895,7 +2896,9 @@ Key Result 1: Define comprehensive IT performance metrics
 Key Result 2: Implement metrics tracking and reporting
 Key Result 3: Use metrics for continuous improvement
 Quality Level: Medium
-Raw Text: Team: IT | Quarter: Q1 2024 | Objective: Build IT metrics and KPI framework | Key Results: Define comprehensive IT performance metrics, Implement metrics tracking and reporting, Use metrics for continuous improvement=== OKR ENTRY ===
+Raw Text: Team: IT | Quarter: Q1 2024 | Objective: Build IT metrics and KPI framework | Key Results: Define comprehensive IT performance metrics, Implement metrics tracking and reporting, Use metrics for continuous improvement
+
+=== OKR ENTRY ===
 Team: Engineering
 Quarter: Q1 2024
 Objective: Make the system better
@@ -4193,7 +4196,9 @@ Key Result 1: Update stakeholders
 Key Result 2: Share information
 Key Result 3: Improve transparency
 Quality Level: Low
-Raw Text: Team: IT | Quarter: Q1 2024 | Objective: Communicate better | Key Results: Update stakeholders, Share information, Improve transparency=== OKR ENTRY ===
+Raw Text: Team: IT | Quarter: Q1 2024 | Objective: Communicate better | Key Results: Update stakeholders, Share information, Improve transparency
+
+=== OKR ENTRY ===
 Team: Engineering
 Quarter: Q1 2024
 Objective: Enhance API gateway performance
@@ -4982,6 +4987,7 @@ Key Result 2: Create innovation pipeline with quarterly deliverables
 Key Result 3: Achieve 80% innovation project success rate
 Quality Level: Medium
 Raw Text: Team: IT | Quarter: Q1 2024 | Objective: Build IT innovation lab | Key Results: Establish innovation lab with 10 emerging technology pilots, Create innovation pipeline with quarterly deliverables, Achieve 80% innovation project success rate
+
 === OKR ENTRY ===
 Team: IT
 Quarter: Q1 2024

@@ -377,7 +377,10 @@ def main():
             st.info("Vector search is not initialized. Please run the analysis script to index OKRs.")
     
     st.markdown("---")
-    st.caption("OKR Analysis System | Powered by Google Gemini Flash & ChromaDB")
+    
+    from src.utils.config import Config
+    provider_display = "Google Gemini" if Config.LLM_PROVIDER == "gemini" else "Qwen"
+    st.caption(f"OKR Analysis System | Powered by {provider_display} & ChromaDB")
 
 
 if __name__ == "__main__":

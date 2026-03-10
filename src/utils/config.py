@@ -14,8 +14,13 @@ load_dotenv()
 class Config:
     """Application configuration"""
     
+    LLM_PROVIDER: str = os.getenv("LLM_PROVIDER", "gemini")
+    
     GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "")
     GEMINI_MODEL: str = os.getenv("GEMINI_MODEL", "gemini-2.5-flash-lite")
+    
+    QWEN_API_KEY: str = os.getenv("QWEN_API_KEY", "")
+    QWEN_MODEL: str = os.getenv("QWEN_MODEL", "qwen-plus")
     
     CHUNK_SIZE: int = int(os.getenv("CHUNK_SIZE", "125"))
     MAX_WORKERS: int = int(os.getenv("MAX_WORKERS", "4"))
@@ -34,8 +39,16 @@ class Config:
     @classmethod
     def validate(cls) -> bool:
         """Validate required configuration"""
-        if not cls.GEMINI_API_KEY:
+        if cls.LLM_PROVIDER == "gemini" and not cls.GEMINI_API_KEY:
             print("❌ GEMINI_API_KEY not set in .env file")
+            return False
+        
+        if cls.LLM_PROVIDER == "qwen" and not cls.QWEN_API_KEY:
+            print("❌ QWEN_API_KEY not set in .env file")
+            return False
+        
+        if cls.LLM_PROVIDER not in ["gemini", "qwen"]:
+            print(f"❌ Invalid LLM_PROVIDER: {cls.LLM_PROVIDER}. Must be 'gemini' or 'qwen'")
             return False
         
         if not Path(cls.OKR_DATA_PATH).exists():
@@ -48,7 +61,11 @@ class Config:
     def print_config(cls):
         """Print current configuration"""
         print("Configuration:")
-        print(f"  Model: {cls.GEMINI_MODEL}")
+        print(f"  Provider: {cls.LLM_PROVIDER}")
+        if cls.LLM_PROVIDER == "gemini":
+            print(f"  Model: {cls.GEMINI_MODEL}")
+        elif cls.LLM_PROVIDER == "qwen":
+            print(f"  Model: {cls.QWEN_MODEL}")
         print(f"  Chunks: {cls.CHUNK_SIZE} OKRs per chunk")
         print(f"  Workers: {cls.MAX_WORKERS} parallel workers")
         print(f"  Embedding: {cls.EMBEDDING_MODEL}")

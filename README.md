@@ -1,6 +1,6 @@
 # 🎯 OKR Analysis System
 
-AI-powered OKR (Objectives and Key Results) analysis system using Google Gemini Flash 2.0 and ChromaDB for theme extraction, quality assessment, and alignment analysis.
+AI-powered OKR (Objectives and Key Results) analysis system supporting multiple LLM providers (Google Gemini and Qwen) with ChromaDB for theme extraction, quality assessment, and alignment analysis.
 
 ## Features
 
@@ -65,7 +65,9 @@ AI-powered OKR (Objectives and Key Results) analysis system using Google Gemini 
 ### 1. Prerequisites
 
 - Python 3.10 or higher
-- Google Gemini API key ([Get one here](https://makersuite.google.com/app/apikey))
+- LLM API key:
+  - **Google Gemini**: [Get API key here](https://makersuite.google.com/app/apikey)
+  - **Qwen**: [Get API key here](https://dashscope.aliyun.com/)
 
 ### 2. Installation
 
@@ -84,10 +86,22 @@ python scripts/setup.py
 
 ### 3. Configuration
 
-Edit `.env` file and add your Gemini API key:
+Edit `.env` file and configure your LLM provider:
+
+**Option A: Using Google Gemini (default)**
 
 ```bash
+LLM_PROVIDER=gemini
 GEMINI_API_KEY=your_actual_api_key_here
+GEMINI_MODEL=gemini-2.5-flash-lite
+```
+
+**Option B: Using Qwen**
+
+```bash
+LLM_PROVIDER=qwen
+QWEN_API_KEY=your_qwen_api_key_here
+QWEN_MODEL=qwen-plus
 ```
 
 ### 4. Run Analysis
@@ -183,9 +197,16 @@ OKRAnalysis-Try2/
 Edit `.env` to customize settings:
 
 ```bash
-# API Configuration
+# LLM Provider Selection
+LLM_PROVIDER=gemini                # Options: gemini, qwen
+
+# Google Gemini Configuration
 GEMINI_API_KEY=your_api_key_here
-GEMINI_MODEL=gemini-2.0-flash-exp
+GEMINI_MODEL=gemini-2.5-flash-lite
+
+# Qwen Configuration
+QWEN_API_KEY=your_qwen_api_key_here
+QWEN_MODEL=qwen-plus               # Options: qwen-plus, qwen-turbo, qwen-max
 
 # Processing Settings
 CHUNK_SIZE=125                     # OKRs per chunk
@@ -201,18 +222,17 @@ MAX_TOKENS=8000
 
 ## Cost Estimates
 
-**Using Gemini Flash 2.0:**
+**Using Gemini Flash 2.5 Lite:**
 - Input: $0.075 per 1M tokens
 - Output: $0.30 per 1M tokens
+- **For 500 OKRs**: ~$0.30 per run
+- **For 10,000 OKRs**: ~$5-10 per complete analysis
 
-**For 500 OKRs:**
-- Theme extraction (4 chunks): ~$0.10
-- Quality assessment (50 samples): ~$0.15
-- Alignment analysis: ~$0.05
-- **Total per run**: ~$0.30
-
-**For full dataset (if scaling up):**
-- Estimated cost for 10,000 OKRs: ~$5-10 per complete analysis
+**Using Qwen:**
+- Qwen-Plus: ¥0.004 per 1K tokens (~$0.0006 USD)
+- Qwen-Turbo: ¥0.002 per 1K tokens (~$0.0003 USD)
+- **For 500 OKRs**: ~$0.05-0.10 per run
+- **For 10,000 OKRs**: ~$1-2 per complete analysis
 
 ## Performance
 
@@ -258,22 +278,31 @@ print(f"Found {len(themes['themes'])} themes")
 
 ## Troubleshooting
 
-### "GEMINI_API_KEY not found"
+### "API_KEY not found"
 - Make sure `.env` file exists and contains your API key
-- Check that the key is valid at https://makersuite.google.com/
+- For Gemini: Check that the key is valid at https://makersuite.google.com/
+- For Qwen: Check that the key is valid at https://dashscope.aliyun.com/
+- Verify `LLM_PROVIDER` is set correctly in `.env`
 
 ### "Module not found" errors
 - Run: `pip install -r requirements.txt`
 - Make sure you're in the project root directory
+- For Qwen support, ensure `openai` package is installed
 
 ### Slow performance
 - Reduce `MAX_WORKERS` in `.env` (try 2 instead of 4)
 - Reduce sample size in `run_analysis.py`
 - Check your internet connection (API calls require network)
+- Try switching providers: Qwen is often faster than Gemini
 
 ### ChromaDB errors
 - Delete `./data/chroma_db/` folder and re-run
 - Make sure you have enough disk space (needs ~500MB)
+
+### Switching between providers
+- Update `LLM_PROVIDER` in `.env` to either `gemini` or `qwen`
+- Make sure the corresponding API key is set
+- No code changes needed - the system handles provider switching automatically
 
 ## Development
 

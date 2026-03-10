@@ -65,8 +65,12 @@ def main():
     print()
     
     print("🧠 Step 4: Initializing LLM analyzer...")
-    analyzer = OKRAnalyzer(api_key=Config.GEMINI_API_KEY, model_name=Config.GEMINI_MODEL)
-    print(f"   ✓ {Config.GEMINI_MODEL} initialized")
+    if Config.LLM_PROVIDER == "gemini":
+        analyzer = OKRAnalyzer(api_key=Config.GEMINI_API_KEY, model_name=Config.GEMINI_MODEL, provider="gemini")
+        print(f"   ✓ {Config.GEMINI_MODEL} initialized")
+    elif Config.LLM_PROVIDER == "qwen":
+        analyzer = OKRAnalyzer(api_key=Config.QWEN_API_KEY, model_name=Config.QWEN_MODEL, provider="qwen")
+        print(f"   ✓ {Config.QWEN_MODEL} initialized")
     print()
     
     print("🎨 Step 5: Extracting themes (parallel map-reduce)...")

@@ -1,9 +1,11 @@
 """
 LLM Client Abstraction Layer
-Provides unified interface for Gemini (can be swapped for Azure OpenAI later)
+Provides unified interface for Gemini and Qwen models
 """
 
 import os
+import ssl
+import certifi
 import json
 from typing import Dict, List, Optional
 from tenacity import retry, stop_after_attempt, wait_exponential
@@ -13,23 +15,48 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+# Fix SSL certificate issue by setting environment variable
+os.environ['SSL_CERT_FILE'] = certifi.where()
+
 
 class LLMClient:
     """Abstraction layer for LLM interactions"""
 
-    def __init__(self, api_key: Optional[str] = None, model_name: Optional[str] = None):
-        self.api_key = api_key or os.getenv("GEMINI_API_KEY")
-        self.model_name = model_name or os.getenv("GEMINI_MODEL", "gemini-2.5-flash-lite")
-
-        if not self.api_key:
-            raise ValueError("GEMINI_API_KEY not found. Please set it in .env file")
-
-        self.client = genai.Client(api_key=self.api_key)
+    def __init__(self, api_key: Optional[str] = None, model_name: Optional[str] = None, provider: Optional[str] = None):
+        self.provider = provider or os.getenv("LLM_PROVIDER", "gemini")
+        
+        if self.provider == "gemini":
+            self.api_key = api_key or os.getenv("GEMINI_API_KEY")
+            self.model_name = model_name or os.getenv("GEMINI_MODEL", "gemini-2.5-flash-lite")
+            
+            if not self.api_key:
+                raise ValueError("GEMINI_API_KEY not found. Please set it in .env file")
+            
+            self.client = genai.Client(api_key=self.api_key)
+            
+        elif self.provider == "qwen":
+            self.api_key = api_key or os.getenv("QWEN_API_KEY")
+            self.model_name = model_name or os.getenv("QWEN_MODEL", "qwen-plus")
+            
+            if not self.api_key:
+                raise ValueError("QWEN_API_KEY not found. Please set it in .env file")
+            
+            try:
+                from openai import OpenAI
+                self.client = OpenAI(
+                    api_key=self.api_key,
+                    base_url="https://dashscope.aliyuncs.com/compatible-mode/v1"
+                )
+            except ImportError:
+                raise ImportError("openai package required for Qwen. Install with: pip install openai")
+        
+        else:
+            raise ValueError(f"Unsupported LLM provider: {self.provider}. Use 'gemini' or 'qwen'")
 
     @retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=4, max=10))
     def generate(self, prompt: str, temperature: float = 0.3, max_tokens: int = 8000) -> str:
         """
-        Generate text using Gemini with retry logic
+        Generate text using configured LLM provider with retry logic
 
         Args:
             prompt: Input prompt
@@ -39,16 +66,25 @@ class LLMClient:
         Returns:
             Generated text response
         """
-        response = self.client.models.generate_content(
-            model=self.model_name,
-            contents=prompt,
-            config=types.GenerateContentConfig(
+        if self.provider == "gemini":
+            response = self.client.models.generate_content(
+                model=self.model_name,
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    temperature=temperature,
+                    max_output_tokens=max_tokens,
+                ),
+            )
+            return response.text
+        
+        elif self.provider == "qwen":
+            response = self.client.chat.completions.create(
+                model=self.model_name,
+                messages=[{"role": "user", "content": prompt}],
                 temperature=temperature,
-                max_output_tokens=max_tokens,
-            ),
-        )
-
-        return response.text
+                max_tokens=max_tokens
+            )
+            return response.choices[0].message.content
 
     @retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=4, max=10))
     def generate_json(self, prompt: str, temperature: float = 0.3) -> Dict:
@@ -62,20 +98,32 @@ class LLMClient:
         Returns:
             Parsed JSON response
         """
-        response = self.client.models.generate_content(
-            model=self.model_name,
-            contents=prompt,
-            config=types.GenerateContentConfig(
+        if self.provider == "gemini":
+            response = self.client.models.generate_content(
+                model=self.model_name,
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    temperature=temperature,
+                    response_mime_type="application/json",
+                ),
+            )
+            return json.loads(response.text)
+        
+        elif self.provider == "qwen":
+            response = self.client.chat.completions.create(
+                model=self.model_name,
+                messages=[{"role": "user", "content": prompt}],
                 temperature=temperature,
-                response_mime_type="application/json",
-            ),
-        )
-
-        return json.loads(response.text)
+                response_format={"type": "json_object"}
+            )
+            return json.loads(response.choices[0].message.content)
 
     def count_tokens(self, text: str) -> int:
         """Estimate token count for text"""
-        return self.client.models.count_tokens(model=self.model_name, contents=text).total_tokens
+        if self.provider == "gemini":
+            return self.client.models.count_tokens(model=self.model_name, contents=text).total_tokens
+        elif self.provider == "qwen":
+            return len(text) // 4
 
 
 class PromptTemplates:

@@ -14,10 +14,10 @@ from src.data.okr_loader import OKREntry
 
 
 class OKRAnalyzer:
-    """Main analyzer class using Gemini Flash with map-reduce pattern"""
+    """Main analyzer class with map-reduce pattern supporting multiple LLM providers"""
     
-    def __init__(self, api_key: Optional[str] = None, model_name: Optional[str] = None):
-        self.llm = LLMClient(api_key=api_key, model_name=model_name)
+    def __init__(self, api_key: Optional[str] = None, model_name: Optional[str] = None, provider: Optional[str] = None):
+        self.llm = LLMClient(api_key=api_key, model_name=model_name, provider=provider)
         self.prompt_templates = PromptTemplates()
     
     def analyze_chunk_map(self, chunk: List[OKREntry], chunk_id: int) -> Dict:
